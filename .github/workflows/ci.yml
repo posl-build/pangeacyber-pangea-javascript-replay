@@ -1,22 +1,7 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
-      - beta
-
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
-
-  merge_group:
-
   workflow_dispatch:
-
 permissions:
   contents: read
 
@@ -29,7 +14,7 @@ env:
 
 jobs:
   setup:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     outputs:
       examples-matrix: ${{ steps.examples-matrix.outputs.examples-matrix }}
@@ -47,7 +32,7 @@ jobs:
         run: find . -type f -name 'yarn.lock' -printf '%h\n' | cut -c 3- | sort -u | jq -cRrs '${{ env.JQ_FILTER }}' >> "$GITHUB_OUTPUT"
 
   build-pangea-node-sdk:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/pangea-node-sdk
@@ -90,7 +75,7 @@ jobs:
         run: yarn attw
 
   build-react-auth:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/react-auth
@@ -139,7 +124,7 @@ jobs:
           path: ./packages/react-auth/docs/
 
   build-react-mui-audit-log-viewer:
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/react-mui-audit-log-viewer
@@ -179,7 +164,7 @@ jobs:
         run: yarn build-storybook
 
   build-react-mui-authn:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/react-mui-authn
@@ -216,7 +201,7 @@ jobs:
           path: ./packages/react-mui-authn/package.tgz
 
   build-react-mui-branding:
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/react-mui-branding
@@ -241,7 +226,7 @@ jobs:
         run: yarn build
 
   build-react-mui-shared:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/react-mui-shared
@@ -274,7 +259,7 @@ jobs:
         run: yarn build-storybook
 
   build-react-mui-share-file-viewer:
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/react-mui-share-file-viewer
@@ -314,7 +299,7 @@ jobs:
           path: ./packages/react-mui-share-file-viewer/docs/
 
   build-vanilla-js:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/vanilla-js
@@ -342,7 +327,7 @@ jobs:
         run: yarn lint-publint
 
   build-webcomponents:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/webcomponents
@@ -373,7 +358,7 @@ jobs:
         run: yarn lint-publint
 
   lint-prettier:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -395,7 +380,7 @@ jobs:
         run: yarn lint
 
   lint-pangea-node-sdk:
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/pangea-node-sdk
@@ -421,7 +406,7 @@ jobs:
 
   test-unit:
     needs: [build-pangea-node-sdk]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [20, 22]
@@ -450,7 +435,7 @@ jobs:
 
   test-integration:
     needs: [build-pangea-node-sdk]
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [20, 22]
@@ -479,7 +464,7 @@ jobs:
 
   docs:
     needs: [build-pangea-node-sdk]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./packages/pangea-node-sdk
@@ -511,7 +496,7 @@ jobs:
 
   examples:
     needs: [setup, build-pangea-node-sdk]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         example: ${{ fromJSON(needs.setup.outputs.examples-matrix) }}
@@ -546,7 +531,7 @@ jobs:
         working-directory: ./packages/pangea-node-sdk
 
   examples-react-audit-log-viewer:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     defaults:
       run:
         working-directory: ./examples/react-audit-log-viewer
